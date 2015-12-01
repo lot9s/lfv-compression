@@ -3,5 +3,5 @@ SPACESHIP:
     independent mpeg: 598785 (0.7%)
 
 BOTTLE:
-    uncompressed:     ?
-    independent mpeg: ?
+    uncompressed:     2985984000
+    independent mpeg: 2684928 (0.09%)
