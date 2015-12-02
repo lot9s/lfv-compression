@@ -1,6 +1,7 @@
 SPACESHIP:
     uncompressed:     88473600
     independent mpeg: 598785 (0.7%)
+    stiched mpeg:     302535 (0.3%)
 
 BOTTLE:
     uncompressed:     2985984000
