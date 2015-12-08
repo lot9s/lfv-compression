@@ -11,3 +11,10 @@ BOTTLE:
     stitched:         1688064 (0.06%)
     interleaved:      1799363 (0.06%)
         * nosnake:    1760804
+
+CAR:
+    uncompressed:     24461180928
+    independent mpeg: 50714494
+    interleaved:
+        * nosnake:    96651814
+

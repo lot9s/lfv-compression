@@ -1,20 +1,20 @@
-import load
-import mpeg_encode
-import mpeg_decode
+from our_mpeg import decode, encode, load
+import sys
 
-print 'loading...'
-image_data = load.load('../bottle.zip')
-print 'finished loading'
+print('loading...', flush=True)
+image_data = load(sys.argv[1])
+print('finished loading')
+sys.stdout.flush()
 
 test_image_1 = image_data[0][0][0]
 test_image_2 = image_data[0][0][1]
 
-print 'encoding...'
-encoded = mpeg_encode.encode(test_image_1, test_image_2, 4)
-print 'finished encoding'
+print('encoding...')
+encoded = encode(test_image_1, test_image_2, 4)
+print('finished encoding')
 
-print 'decoding...'
-decoded = mpeg_decode.decode(encoded, test_image_2, 4)
-print 'finished decoding'
+print('decoding...')
+decoded = decode(encoded, test_image_2, 4)
+print('finished decoding')
 
-print test_image_1 == decoded
+print(test_image_1 == decoded)

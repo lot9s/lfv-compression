@@ -8,9 +8,9 @@ def decode(blocks, reference, block_dim):
 	block_size = block_dim
 
 	recovered_image = [[[]]]
-	for block_x in xrange(len(blocks)):
+	for block_x in range(len(blocks)):
 		column = [[]]
-		for block_y in xrange(len(blocks[block_x])):
+		for block_y in range(len(blocks[block_x])):
 			motion_vect, residual = blocks[block_x][block_y]
 			ref_x = block_x*block_size + motion_vect[0]
 			ref_y = block_y*block_size + motion_vect[1]

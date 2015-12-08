@@ -8,9 +8,9 @@ global block_size
 def encode(image, reference, block_dim):
 	global block_size
 	block_size = block_dim
-	iterations_x = len(image)/block_size
-	iterations_y = len(image[0])/block_size
-	return [[_find_match(image, x, y, reference) for y in xrange(iterations_y)] for x in xrange(iterations_x)]  
+	iterations_x = len(image)//block_size
+	iterations_y = len(image[0])//block_size
+	return [[_find_match(image, x, y, reference) for y in range(iterations_y)] for x in range(iterations_x)]
 
 #finds the best match given the _image_iterator pattern of selecting reference images
 def _find_match(image, x, y, reference):
@@ -29,16 +29,16 @@ def _find_match(image, x, y, reference):
 	return (motion_vector, residual)
 
 def _get_block(image, x, y):
-	return image[x:x+block_size, [i+y for i in xrange(block_size)]]
+	return image[x:x+block_size, [i+y for i in range(block_size)]]
 
 def _residual_block(encode_block, ref_block):
 	residual = numpy.subtract(encode_block, ref_block)
 
 def _block_dist(a, b):
 	total = 0
-	for i in xrange(len(a)):
-		for j in xrange(len(a[i])):
-			for k in xrange(len(a[i][j])):
+	for i in range(len(a)):
+		for j in range(len(a[i])):
+			for k in range(len(a[i][j])):
 				total += _absolute_differences(a[i][j][k], b[i][j][k])
 	return total
 
@@ -54,7 +54,6 @@ def _absolute_differences(a, b):
 #this class returns the block to search in an image.
 #TODO: currently uses a full search of the reference image.  Implement a faster search if neccessary
 def _image_iterator(image, start_x, start_y):
-	for x in xrange(len(image) - block_size + 1):
-		for y in xrange(len(image[x]) - block_size + 1):
+	for x in range(len(image) - block_size + 1):
+		for y in range(len(image[x]) - block_size + 1):
 			yield (_get_block(image, x, y), x, y)
-

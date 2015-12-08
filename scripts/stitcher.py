@@ -43,8 +43,8 @@ with TemporaryDirectory() as output_dir:
     # get cmd line args
     camera_dirs = os.listdir(lf_video_dir)
     camera_coordinates = [ extract_coordinates(d) for d in camera_dirs]
-    cam_rows = max([x for x,y in camera_coordinates])
-    cam_cols = max([y for x,y in camera_coordinates])
+    cam_rows = max([x for x,y in camera_coordinates]) + 1
+    cam_cols = max([y for x,y in camera_coordinates]) + 1
 
     # get info about images
     init_img = Image.open(GetImgPath(lf_video_dir, camera_dirs[0], 1))
@@ -61,6 +61,7 @@ with TemporaryDirectory() as output_dir:
                 image_path = GetImgPath(lf_video_dir, GetCameraPath(row,col), timestep)
                 current_image = Image.open(image_path)
                 img_out.paste(current_image, (img_width * col, img_height * row))
+        print("Creating: %s" % (GetOutImgPath(output_dir, timestep),))
         img_out.save(GetOutImgPath(output_dir, timestep))
 
     print("Merging frames...")

@@ -21,7 +21,7 @@ def GetImgPath(img_dir, camera, t):
 
 # this method produces the properly formatted path to the desired output image
 def GetOutImgPath(out_dir, t):
-    return os.path.join(out_dir, 'out-%04d%s' % (t,IMG_EXT))
+    return os.path.join(out_dir, 'out-%05d%s' % (t,IMG_EXT))
 
 def extract_coordinates(camera_folder):
     assert camera_folder.startswith(CAMERA_PREFIX)
@@ -43,8 +43,8 @@ with TemporaryDirectory() as output_dir:
     # get cmd line args
     camera_dirs = os.listdir(lf_video_dir)
     camera_coordinates = [ extract_coordinates(d) for d in camera_dirs]
-    cam_rows = max([x for x,y in camera_coordinates])
-    cam_cols = max([y for x,y in camera_coordinates])
+    cam_rows = max([x for x,y in camera_coordinates]) + 1
+    cam_cols = max([y for x,y in camera_coordinates]) + 1
 
     # get info about images
     init_img = Image.open(GetImgPath(lf_video_dir, camera_dirs[0], 1))
@@ -68,9 +68,8 @@ with TemporaryDirectory() as output_dir:
             image_path = GetImgPath(lf_video_dir, GetCameraPath(row,col), timestep)
             output_image_path = GetOutImgPath(output_dir, fake_timestep)
             fake_timestep += 1
-            print ("Moving %s to %s." % (image_path, output_image_path))
-            img_out = Image.open(image_path)
-            img_out.save(output_image_path)
+            print ("Copying %s to %s." % (image_path, output_image_path))
+            shutil.copyfile(image_path, output_image_path)
     print("Merging frames...")
 
     #  "-force_key_frames", "expr:gte(n, n_forced*%d)" % (len(camera_order),),
