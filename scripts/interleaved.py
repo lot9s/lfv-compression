@@ -54,7 +54,7 @@ with TemporaryDirectory() as output_dir:
     camera_order = []
     temp_columns = list(range(cam_cols))
     for row in range(cam_rows):
-        temp_columns = list(reversed(temp_columns))
+        # temp_columns = list(reversed(temp_columns))
         for col in temp_columns:
             camera_order.append((row,col))
 
@@ -73,6 +73,7 @@ with TemporaryDirectory() as output_dir:
             img_out.save(output_image_path)
     print("Merging frames...")
 
+    #  "-force_key_frames", "expr:gte(n, n_forced*%d)" % (len(camera_order),),
     p = subprocess.Popen(["ffmpeg", "-r", "24", "-pattern_type" , "glob", "-i", "*.png", "-c:v", "libx264", "out.mp4"], cwd=output_dir)
     p.wait()
     shutil.move(os.path.join(output_dir, 'out.mp4'), os.getcwd())
