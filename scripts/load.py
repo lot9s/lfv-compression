@@ -38,17 +38,22 @@ def load(zipfile):
 			camera_x = int(cameras.group(1))
 			camera_y = int(cameras.group(2))
 			time = int(re.match(r'^Image(\d+).png$', path[1]).group(1))
-			data = _open_file_ycbr(filename, archive)
+			data = _open_ycbr_from_archive(filename, archive)
 			current = LFV
 			for p in [camera_x, camera_y, time]:
 				if p not in current.keys():
 					current[p] = {}
 				current = current[p]
 			LFV[camera_x][camera_y][time] = data
+	return _make_list(LFV)
 
-	return LFV
+#note: all keys must be castable to integer
+def _make_list(dictionary):
+	if isinstance(dictionary, dict):
+		return [dictionary[i] for i in xrange(len(dictionary))]
+	return dictionary
 
-def _open_file_ycbr(filename, archive):
+def _open_ycbr_from_archive(filename, archive):
 	image_data =  archive.read(filename)
 	fh = StringIO(image_data)
 	image = Image.open(fh)
