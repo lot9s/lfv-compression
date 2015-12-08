@@ -11,7 +11,6 @@ from StringIO import StringIO
 # 	archive = ZipFile(zipfile, 'r')
 # 	for entry in archive.infolist():
 # 		filename = entry.filename
-# 		print filename
 # 		if filename[-4:] == '.png':  #only open png
 # 			ycbr_array = _open_file_ycbr(filename, archive)
 # 			y = [[x[0] for x in ycbr_row] for ycbr_row in ycbr_array]
@@ -31,13 +30,12 @@ def load(zipfile):
 	archive = ZipFile(zipfile, 'r')
 	for entry in archive.infolist():
 		filename = entry.filename
-		print 'opening: {}'.format(filename)
 		if filename[-4:] == '.png':  #only open png
 			path = filename.split('/')
 			cameras = re.match(r'^camera_(\d+)_(\d+)$', path[0])
 			camera_x = int(cameras.group(1))
 			camera_y = int(cameras.group(2))
-			time = int(re.match(r'^Image(\d+).png$', path[1]).group(1))
+			time = int(re.match(r'^Image(\d+).png$', path[1]).group(1)) - 1
 			data = _open_ycbr_from_archive(filename, archive)
 			current = LFV
 			for p in [camera_x, camera_y, time]:
@@ -50,7 +48,7 @@ def load(zipfile):
 #note: all keys must be castable to integer
 def _make_list(dictionary):
 	if isinstance(dictionary, dict):
-		return [dictionary[i] for i in xrange(len(dictionary))]
+		return [_make_list(dictionary[i]) for i in xrange(len(dictionary))]
 	return dictionary
 
 def _open_ycbr_from_archive(filename, archive):
@@ -59,7 +57,3 @@ def _open_ycbr_from_archive(filename, archive):
 	image = Image.open(fh)
 	ycbr = image.convert('YCbCr')
 	return numpy.ndarray((image.size[1], image.size[0], 3), 'u1', ycbr.tostring())
-
-
-# USAGE: load_lf_video <video_file_name>.zip
-load(sys.argv[1])

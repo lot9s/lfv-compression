@@ -1,4 +1,4 @@
-import scipy
+import scipy.fftpack
 import numpy
 
 global block_size
@@ -23,15 +23,16 @@ def _find_match(image, x, y, reference):
 		if dist < min_value:
 			min_value = dist
 			min_coordinates = (ref_x, ref_y)
+			min_block = ref_block
 	motion_vector = (min_coordinates[0] - x, min_coordinates[1] - y)
 	residual = scipy.fftpack.dct(_residual_block(encode_block, min_block))
 	return (motion_vector, residual)
 
 def _get_block(image, x, y):
-	return image[x:x+block_size][y:y+block_size]
+	return image[x:x+block_size, [i+y for i in xrange(block_size)]]
 
 def _residual_block(encode_block, ref_block):
-	return numpy.subtract(encode_block, ref_block)
+	residual = numpy.subtract(encode_block, ref_block)
 
 def _block_dist(a, b):
 	total = 0
@@ -43,17 +44,17 @@ def _block_dist(a, b):
 
 #comparrision algorithm
 def _sum_of_squares_comp(a, b):
-	return (a - b)**2
+	return (int(a) - int(b))**2
 
 #comparrision algorithm
 def _absolute_differences(a, b):
-	return abs(a - b)
+	return abs(int(a) - int(b))
 
 
 #this class returns the block to search in an image.
 #TODO: currently uses a full search of the reference image.  Implement a faster search if neccessary
 def _image_iterator(image, start_x, start_y):
-	for x in xrange(len(image)):
-		for y in xrange(len(image[x])):
+	for x in xrange(len(image) - block_size + 1):
+		for y in xrange(len(image[x]) - block_size + 1):
 			yield (_get_block(image, x, y), x, y)
 
