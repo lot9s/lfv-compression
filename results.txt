@@ -2,7 +2,10 @@ SPACESHIP:
     uncompressed:     88473600
     independent mpeg: 598785 (0.7%)
     stiched mpeg:     302535 (0.3%)
+    interleaved:      287812 (0.2%)
 
 BOTTLE:
     uncompressed:     2985984000
     independent mpeg: 2684928 (0.09%)
+    stitched:         1688064 (0.06%)
+    interleaved:      1799363 (0.06%)
