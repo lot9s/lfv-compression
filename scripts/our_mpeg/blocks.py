@@ -1,4 +1,3 @@
-import scipy.fftpack
 import numpy as np
 
 def break_blocks(image, block_size=8):
