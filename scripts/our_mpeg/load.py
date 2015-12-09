@@ -34,7 +34,8 @@ def load(zipfile):
 def load_separate(zipfile):
     """Loads the light field video file, and returns the results as three tensors Y, Cb, Cr each with dimensions
         (timestep, camera_x, camera_y, image_x, image_y)"""
-    return [np.squeeze(x) for x in np.split(load(zipfile),3,5)]
+    x = load(zipfile)
+    return [x[:,:,:,:,:,i] for i in range(0,x.shape[-1])]
 
 def iterate_archive(archive):
     for entry in archive.infolist():
