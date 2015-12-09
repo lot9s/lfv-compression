@@ -22,7 +22,7 @@ def inverse_transform(array):
         list(list(numpy.ndarry)): the idct casted to uint8 of each numpy array in the 2D list
     """
     return [
-        [idct(array[x][y], norm='ortho').astype(np.uint8)
+        [np.rint(idct(array[x][y], norm='ortho')).astype(np.uint8)
          for y in range(0, len(array[x]))]
          for x in range(0, len(array))
     ]
