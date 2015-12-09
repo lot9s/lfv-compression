@@ -24,13 +24,17 @@ def load(zipfile):
             image_x, image_y, _ = data.shape
 
     result = np.empty((n_time, n_camera_x, n_camera_y, image_x, image_y, 3), dtype=np.uint8)
-
+    
     for time, camera_x, camera_y, filename in iterate_archive(archive):
         data = _open_ycbr_from_archive(filename, archive)
         result[time, camera_x, camera_y, :, :, :] = data
 
     return result
 
+def load_separate(zipfile):
+    """Loads the light field video file, and returns the results as three tensors Y, Cb, Cr each with dimensions
+        (timestep, camera_x, camera_y, image_x, image_y)"""
+    return [np.squeeze(x) for x in np.split(load(zipfile),3,5)]
 
 def iterate_archive(archive):
     for entry in archive.infolist():
@@ -48,4 +52,4 @@ def _open_ycbr_from_archive(filename, archive):
     fh = IOWrapper(image_data)
     image = Image.open(fh)
     ycbr = image.convert('YCbCr')
-    return np.ndarray((image.size[1], image.size[0], 3), 'u1', ycbr.tobytes())
+    return np.ndarray(shape=(image.size[1], image.size[0], 3), dtype=np.uint8, buffer=ycbr.tobytes())
