@@ -35,11 +35,11 @@ def apply_reference(refs, reference):
     return result
 
 def cost_f(block1, block2):
-    """Comutes the cost of the block pairing"""
+    """Computes the cost of the block pairing"""
     return abs(block1 - block2).sum()
 
 def find_match(block, reference, offset_x, offset_y, max_delta=2):
-    """Given a block finds the best match for that block in reference image
+    """Given a block, find the best match for that block in reference image
     returns offset and residual error"""
     bl_x, bl_y, _ = block.shape
     best_cost = float('inf')
