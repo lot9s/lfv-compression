@@ -36,7 +36,7 @@ def quantize_inter_block(block):
     Returns:
         numpy.ndarry: uint8 macroblock elementwise divided and rounded to nearest integer
     """
-    return np.rint(np.divide(block, QINTER3[:block.shape[0],:block.shape[1],:].astype(np.float32))).astype(np.uint8)
+    return np.round(block / QINTER3[:block.shape[0],:block.shape[1],:].astype(np.float32)).astype(np.uint8)
 
 def quantize_inter(array):
     """
@@ -84,7 +84,7 @@ def quantize_intra_block(block):
     Returns:
         numpy.ndarry: uint8 macroblock elementwise divided and rounded to nearest integer
     """
-    return np.rint(np.divide(block, QINTRA3[:block.shape[0],:block.shape[1],:].astype(np.float32))).astype(np.uint8)
+    return np.rint(block / QINTRA3[:block.shape[0],:block.shape[1],:].astype(np.float32)).astype(np.uint8)
 
 def quantize_intra(array):
     """
