@@ -5,7 +5,7 @@ def break_blocks(image, block_size=8):
     returns a 2D array of blocks that corresponds to the grid which the blocks
     from on top of the image."""
     return [
-        [image[start_x:start_x+block_size, start_y:start_y+block_size, :]
+        [image[start_x:start_x+block_size, start_y:start_y+block_size, :].astype(np.float32)
          for start_y in range(0, len(image[0]), block_size)]
          for start_x in range(0, len(image), block_size)
     ]
@@ -21,7 +21,7 @@ def merge_blocks(blocks):
         offset_y = 0
         for block in blocks_row:
             cur_x, cur_y, _ = block.shape
-            result[offset_x:offset_x+cur_x, offset_y:offset_y+cur_y, :] = block
+            result[offset_x:offset_x+cur_x, offset_y:offset_y+cur_y, :] = np.round(np.clip(block, 0, 255.0, )).astype(np.uint8)
             offset_y += cur_y
         offset_x += blocks_row[0].shape[0]
     return result

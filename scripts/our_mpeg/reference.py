@@ -30,8 +30,8 @@ def apply_reference(offsets, residuals, reference):
         for (dx,dy), residual in zip(offsets_row, residuals_row):
             bl_x, bl_y, _ = residual.shape
             new_x, new_y = offset_x + dx, offset_y + dy
-            reference_block = reference[new_x:new_x+bl_x, new_y:new_y +bl_y, :]
-            recovered_block = (reference_block + residual).astype(np.uint8)
+            reference_block = reference[new_x:new_x+bl_x, new_y:new_y +bl_y, :].astype(np.float32)
+            recovered_block = (reference_block + residual)
             result[-1].append(recovered_block)
             offset_y += residual.shape[1]
         offset_x += residuals_row[0].shape[0]
@@ -51,7 +51,7 @@ def find_match(block, reference, offset_x, offset_y, max_delta=2):
     for dx in range(-max_delta, max_delta + 1):
         for dy in range(-max_delta, max_delta + 1):
             new_x, new_y = offset_x + dx, offset_y + dy
-            reference_block = reference[new_x:new_x+bl_x, new_y:new_y +bl_y, :]
+            reference_block = reference[new_x:new_x+bl_x, new_y:new_y +bl_y, :].astype(np.float32)
             if reference_block.shape != block.shape:
                 continue
             new_cost = cost_f(block, reference_block)
@@ -59,4 +59,4 @@ def find_match(block, reference, offset_x, offset_y, max_delta=2):
                 best_cost = new_cost
                 best_offset = (dx,dy)
                 best_ref = reference_block
-    return best_offset, block.astype(np.int16) - best_ref
+    return best_offset, block - best_ref

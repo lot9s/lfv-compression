@@ -4,12 +4,12 @@ from scipy.fftpack import dct, idct
 def transform(array):
     """
     Args:
-        list(list(numpy.ndarray)): 2D list of uint8 numpy arrays
+        list(list(numpy.ndarray)): 2D list of int16 numpy arrays
     Returns:
         list(list(numpy.ndarry)): the dct coefficients as float32 of each numpy array in the 2D list
     """
     return [
-        [dct(array[x][y].astype(np.float32), norm='ortho')
+        [dct(array[x][y], norm='ortho')
          for y in range(0, len(array[x]))]
          for x in range(0, len(array))
     ]
@@ -22,7 +22,7 @@ def inverse_transform(array):
         list(list(numpy.ndarry)): the idct casted to uint8 of each numpy array in the 2D list
     """
     return [
-        [np.rint(idct(array[x][y], norm='ortho')).astype(np.int16)
+        [np.rint(idct(array[x][y], norm='ortho'))
          for y in range(0, len(array[x]))]
          for x in range(0, len(array))
     ]
