@@ -31,7 +31,7 @@ def apply_reference(offsets, residuals, reference):
             bl_x, bl_y, _ = residual.shape
             new_x, new_y = offset_x + dx, offset_y + dy
             reference_block = reference[new_x:new_x+bl_x, new_y:new_y +bl_y, :]
-            recovered_block = reference_block + residual
+            recovered_block = (reference_block + residual).astype(np.uint8)
             result[-1].append(recovered_block)
             offset_y += residual.shape[1]
         offset_x += residuals_row[0].shape[0]
@@ -59,4 +59,4 @@ def find_match(block, reference, offset_x, offset_y, max_delta=2):
                 best_cost = new_cost
                 best_offset = (dx,dy)
                 best_ref = reference_block
-    return best_offset, block - best_ref
+    return best_offset, block.astype(np.int16) - best_ref
