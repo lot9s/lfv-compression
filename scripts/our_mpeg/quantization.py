@@ -37,9 +37,9 @@ def quantize_block(block, qmatrix=QINTER3):
     Args:
         numpy.ndarray: float32 numpy arrays of shape (n,n,3) where 0 < n <= 8
     Returns:
-        numpy.ndarry: uint8 macroblock elementwise divided and rounded to nearest integer
+        numpy.ndarry: int8 macroblock elementwise divided and rounded to nearest integer
     """
-    return np.round(block / qmatrix[:block.shape[0],:block.shape[1],:]).astype(np.uint8)
+    return np.round(block / qmatrix[:block.shape[0],:block.shape[1],:].astype(np.float32)).astype(np.int8)#.astype(np.uint8)
 
 def quantize(array, qmatrix=QINTER3):
     """
@@ -59,7 +59,7 @@ def dequantize_block(block, qmatrix=QINTER3):
     """
     Perform inter dequantization on all three channels in a macroblock
     Args:
-        numpy.ndarray: uint8 numpy arrays of shape (n,n,3) where 0 < n <= 8
+        numpy.ndarray: int8 numpy arrays of shape (n,n,3) where 0 < n <= 8
     Returns:
         numpy.ndarry: float32 macroblock
     """
