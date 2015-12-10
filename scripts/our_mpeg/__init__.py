@@ -9,4 +9,6 @@ from .main import (
     decompress_image,
     compress_image_with_reference,
     decompress_image_with_reference,
+    compress_image_with_dual_reference,
+    decompress_image_with_dual_reference,
 )

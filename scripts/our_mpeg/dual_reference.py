@@ -15,12 +15,25 @@ def compute_dual_reference(blocks, reference1, reference2):
         for block in blocks_row:
             offset1, ref_block1 = find_match(block, reference1, offset_x, offset_y)
             offset2, ref_block2 = find_match(block, reference2, offset_x, offset_y)
-            residual = block - ref_block1/2 - ref_block2/2
+            residual = block - ref_block1 // 2 - ref_block2 // 2
+            assert residual.dtype == np.uint8
             offsets[-1].append((offset1, offset2))
             residuals[-1].append(residual)
             offset_y += block.shape[1]
         offset_x += blocks_row[0].shape[0]
     return offsets, residuals
+
+def find_delta(from_image, to_image, delta=30, pattern_radius = 20):
+   best, best_d = float('inf'), None
+   for dx in range(-delta,delta+1):
+       for dy in range(-delta,delta+1):
+           patternA = to_image[cx-pattern_radius:cx+pattern_radius,cy-pattern_radius:cy+pattern_radius]
+           patternB = from_image[cx+dx-pattern_radius:cx+dx+pattern_radius,cy+dy-pattern_radius:cy+dy+pattern_radius]
+           score = abs(patternA.astype(np.float32) - patternB.astype(np.float32)).sum()
+           if score < best:
+               best = score
+               best_d = (dx,dy)
+   return best_d
 
 def apply_dual_reference(offsets, residuals, reference1, reference2):
     """Inverse of compute_reference"""
@@ -35,7 +48,7 @@ def apply_dual_reference(offsets, residuals, reference1, reference2):
             new_x2, new_y2 = offset_x + dx2, offset_y + dy2
             reference_block1 = reference1[new_x1:new_x1+bl_x, new_y1:new_y1 +bl_y, :]
             reference_block2 = reference2[new_x2:new_x2+bl_x, new_y2:new_y2 +bl_y, :]
-            recovered_block = reference_block1/2 + reference_block2/2 + residual
+            recovered_block = reference_block1 // 2 + reference_block2 // 2 + residual
             result[-1].append(recovered_block)
             offset_y += residual.shape[1]
         offset_x += residuals_row[0].shape[0]
@@ -45,7 +58,7 @@ def cost_f(block1, block2):
     """Computes the cost of the block pairing"""
     return abs(block1 - block2).sum()
 
-def find_match(block, reference, offset_x, offset_y, max_delta=2):
+def find_match(block, reference, offset_x, offset_y, max_delta=30):
     """Given a block, find the best match for that block in reference image
     returns offset and reference block"""
     bl_x, bl_y, _ = block.shape
