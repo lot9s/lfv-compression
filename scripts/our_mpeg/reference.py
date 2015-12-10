@@ -5,6 +5,8 @@ def compute_reference(blocks, reference):
     where offset is the offet wrt initial position of block in the image,
     such that the residual is calculated w.r.t reference image position
     (block_position + offset)"""
+    reference = reference.astype(np.float32)
+
     offsets   = []
     residuals = []
     offset_x = 0
@@ -39,7 +41,7 @@ def apply_reference(offsets, residuals, reference):
 
 def cost_f(block1, block2):
     """Computes the cost of the block pairing"""
-    return abs(block1 - block2).sum()
+    return np.linalg.norm(block1 - block2)
 
 def find_match(block, reference, offset_x, offset_y, max_delta=2):
     """Given a block, find the best match for that block in reference image
@@ -51,7 +53,7 @@ def find_match(block, reference, offset_x, offset_y, max_delta=2):
     for dx in range(-max_delta, max_delta + 1):
         for dy in range(-max_delta, max_delta + 1):
             new_x, new_y = offset_x + dx, offset_y + dy
-            reference_block = reference[new_x:new_x+bl_x, new_y:new_y +bl_y, :].astype(np.float32)
+            reference_block = reference[new_x:new_x+bl_x, new_y:new_y +bl_y, :]
             if reference_block.shape != block.shape:
                 continue
             new_cost = cost_f(block, reference_block)
@@ -59,4 +61,7 @@ def find_match(block, reference, offset_x, offset_y, max_delta=2):
                 best_cost = new_cost
                 best_offset = (dx,dy)
                 best_ref = reference_block
-    return best_offset, block - best_ref
+    if best_ref is None:
+        return (None, None), None
+    else:
+        return best_offset, block - best_ref
