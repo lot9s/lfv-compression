@@ -4,6 +4,7 @@ from .reference import compute_reference, apply_reference
 from .dual_reference import compute_dual_reference, apply_dual_reference, find_delta
 from .transform import transform, inverse_transform
 from .quantization import quantize, dequantize
+from .zigzag import zigzag, inverse_zigzag
 from .main import (
     compress_image,
     decompress_image,
