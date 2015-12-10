@@ -30,11 +30,11 @@ def decompress_image_with_reference(im1_offsets, im1_residuals_q, reference_imag
     im1_recovered = merge_blocks(im1_blocks_recovered)
     return im1_recovered
 
-def compress_image_with_dual_reference(im1, reference_image1, reference_image2, block_size=8):
+def compress_image_with_dual_reference(im1, reference_image1, reference_image2, block_size=8, single_grid=2, double_grid=2):
     im1_blocks = break_blocks(im1, block_size=8)
     d1 = find_delta(reference_image1, im1)
     d2 = find_delta(reference_image2, im1)
-    im1_offsets, im1_residuals = compute_dual_reference(im1_blocks, reference_image1, reference_image2, d1, d2)
+    im1_offsets, im1_residuals = compute_dual_reference(im1_blocks, reference_image1, reference_image2, d1, d2, single_grid=single_grid, double_grid=double_grid)
     im1_residuals_dct = transform(im1_residuals)
     im1_residuals_q = quantize(im1_residuals_dct)
     return im1_offsets, im1_residuals_q

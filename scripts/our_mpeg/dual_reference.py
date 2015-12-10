@@ -4,7 +4,7 @@ from .reference import find_match
 
 FUNNY_OFFSET = 63
 
-def compute_dual_reference(blocks, reference1, reference2, delta1, delta2):
+def compute_dual_reference(blocks, reference1, reference2, delta1, delta2, single_grid=2, double_grid=2):
     """For every block returns a pair, (offset, residual1, residual2),
     where offset is the offet wrt initial position of block in the image,
     such that the residual is calculated w.r.t reference image position
@@ -26,21 +26,21 @@ def compute_dual_reference(blocks, reference1, reference2, delta1, delta2):
             best_residual  = block
 
             # only use reference image 1
-            (x1,y1), residual = find_match(block, reference1, offset_x + delta1[0], offset_y + delta1[1])
+            (x1,y1), residual = find_match(block, reference1, offset_x + delta1[0], offset_y + delta1[1], max_delta=single_grid)
             if residual is not None and np.linalg.norm(residual) < best_norm:
                 best_norm = np.linalg.norm(residual)
                 best_residual = residual
                 best_offsets = ((x1 + delta1[0], y1 + delta1[1]), (FUNNY_OFFSET, FUNNY_OFFSET))
 
             # only use reference image 2
-            (x2,y2), residual = find_match(block, reference2, offset_x + delta2[0], offset_y + delta2[1])
+            (x2,y2), residual = find_match(block, reference2, offset_x + delta2[0], offset_y + delta2[1], max_delta=single_grid)
             if residual is not None and np.linalg.norm(residual) < best_norm:
                 best_norm = np.linalg.norm(residual)
                 best_residual = residual
                 best_offsets = ((FUNNY_OFFSET, FUNNY_OFFSET),  (x2 + delta2[0], y2 + delta2[1]))
 
-            for (x1, y1), ref_block1 in iterate_blocks(block, reference1, offset_x + delta1[0], offset_y + delta1[1]):
-                for (x2, y2), ref_block2 in iterate_blocks(block, reference2, offset_x + delta2[0], offset_y + delta2[1]):
+            for (x1, y1), ref_block1 in iterate_blocks(block, reference1, offset_x + delta1[0], offset_y + delta1[1], max_delta=double_grid):
+                for (x2, y2), ref_block2 in iterate_blocks(block, reference2, offset_x + delta2[0], offset_y + delta2[1], max_delta=double_grid):
                     residual = block - (ref_block1 + ref_block2) / 2.0
                     cost = np.linalg.norm(residual)
                     if cost < best_norm:
