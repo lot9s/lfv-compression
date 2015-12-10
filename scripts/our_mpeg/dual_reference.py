@@ -15,8 +15,8 @@ def compute_dual_reference(blocks, reference1, reference2):
         for block in blocks_row:
             offset1, ref_block1 = find_match(block, reference1, offset_x, offset_y)
             offset2, ref_block2 = find_match(block, reference2, offset_x, offset_y)
-            residual = block - reference1/2 - reference2/2
-            offsets[-1].append((offset1, offset2)
+            residual = block - ref_block1/2 - ref_block2/2
+            offsets[-1].append((offset1, offset2))
             residuals[-1].append(residual)
             offset_y += block.shape[1]
         offset_x += blocks_row[0].shape[0]
